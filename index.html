@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <title>Vidya & Sachin</title>
+    <meta name="description" content="Wedding celebration of Vidya and Sachin. Join us on our special day.">
+
+    <!-- Google Fonts: Playfair Display, Lato, Great Vibes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        champagne: '#FBF9F6',
+                        blush: {
+                            DEFAULT: '#F2E8E4',
+                            dark: '#E5D5CF'
+                        },
+                        charcoal: {
+                            DEFAULT: '#2D2C2A',
+                            light: '#4A4947'
+                        },
+                        gold: {
+                            DEFAULT: '#C5A059',
+                            light: '#E3C892',
+                            dark: '#A48242'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Lato"', 'sans-serif'],
+                        script: ['"Great Vibes"', 'cursive']
+                    },
+                    animation: {
+                        'soft-float': 'softFloat 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        softFloat: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        /* Base Styles & Touch Optimization */
+        body {
+            background-color: #FBF9F6; /* Champagne */
+            color: #2D2C2A; /* Charcoal */
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+
+        /* Ambient Hero Overlay */
+        .hero-overlay {
+            background: linear-gradient(
+                to bottom,
+                rgba(45, 44, 42, 0.4) 0%,
+                rgba(45, 44, 42, 0.6) 100%
+            );
+        }
+
+        /* Scroll Reveal (Intersection Observer) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: opacity, transform;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .delay-1 { transition-delay: 150ms; }
+        .delay-2 { transition-delay: 300ms; }
+        .delay-3 { transition-delay: 450ms; }
+
+        /* Elegant Image Borders */
+        .img-border {
+            position: relative;
+        }
+        .img-border::after {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border: 1px solid #C5A059; /* Gold */
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* Custom Scrollbar for mobile/desktop harmony */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #FBF9F6; }
+        ::-webkit-scrollbar-thumb { background: #C5A059; border-radius: 10px; }
+
+        /* Touch friendly tap targets for mobile (iPhone iOS HIG) */
+        button, a, .touch-target {
+            min-height: 44px; 
+            min-width: 44px;
+            touch-action: manipulation;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+  	  <!-- Background Music Audio Element -->
+  <audio id="weddingBgm" loop preload="auto">
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+<!-- Music Toggle Button -->
+<button id="musicToggle" class="fixed bottom-6 left-6 z-50 bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg border border-gray-200 text-gray-800 hover:bg-white transition-all transform hover:scale-105 touch-manipulation" aria-label="Toggle Music">
+    
+    <!-- Muted Icon (Default) -->
+    <svg id="icon-muted" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+    </svg>
+
+    <!-- Playing Icon (Hidden by default) -->
+    <svg id="icon-playing" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+    </svg>
+    
+</button>
+	
+    <!-- Sticky Navbar -->
+    <header id="main-nav" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-champagne/90 backdrop-blur-md border-b border-gold/20" style="padding-top: max(0.75rem, env(safe-area-inset-top)); padding-bottom: 0.75rem;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-8 flex justify-between items-center">
+            <a href="#home" class="flex items-center space-x-2 touch-target">
+                <span class="font-script text-3xl sm:text-4xl text-gold">Vidya Weds Sachin</span>
+            </a>
+
+            <!-- Desktop Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-xs uppercase tracking-widest font-bold text-charcoal-light">
+                <a href="#souls" class="hover:text-gold transition-colors py-2">The Couple</a>
+                <a href="#itinerary" class="hover:text-gold transition-colors py-2">Itinerary</a>
+                <a href="#moments" class="hover:text-gold transition-colors py-2">Gallery</a>
+             
+            </nav>
+
+            <!-- Mobile Hamburger -->
+            <button id="mobile-toggle" aria-label="Toggle menu" class="md:hidden text-charcoal p-2 focus:outline-none touch-target">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7h16M4 12h16M4 17h16"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-6 bg-champagne/95 backdrop-blur-lg border-b border-gold/20 text-center">
+            <div class="flex flex-col space-y-2 text-sm uppercase tracking-widest font-bold text-charcoal">
+                <a href="#souls" class="mobile-nav-link py-3 hover:text-gold">The Couple</a>
+                <a href="#itinerary" class="mobile-nav-link py-3 hover:text-gold">Itinerary</a>
+                <a href="#moments" class="mobile-nav-link py-3 hover:text-gold">Gallery</a>
+                <a href="#warm-regards" class="mobile-nav-link py-3 hover:text-gold">Blessings</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- -->
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-[95vh] flex items-center justify-center text-center px-4 pt-20">
+        <!-- Background Image (Soft focus romantic) -->
+        <div class="absolute inset-0 bg-cover bg-center md:bg-[center_30%]" style="background-image: url('bg.jpeg');"></div>
+        <div class="absolute inset-0 hero-overlay"></div>
+
+        <div class="relative z-20 max-w-3xl mx-auto text-champagne mt-10 w-full">
+            <div class="animate-soft-float mb-6">
+                <p class="font-sans text-xs sm:text-sm tracking-[0.3em] uppercase text-gold-light mb-4">We are getting married</p>
+                <h1 class="font-serif text-6xl sm:text-7xl md:text-8xl text-champagne drop-shadow-lg leading-tight mb-2">
+                    Vidya <span class="font-script text-gold-light text-7xl sm:text-8xl md:text-9xl px-2 font-normal">&amp;</span> Sachin
+                </h1>
+                <p class="font-serif italic text-lg sm:text-2xl text-champagne/90 mt-4">October 20, 2026</p>
+            </div>
+
+            <!-- Mobile-Optimized Countdown -->
+            <div class="bg-charcoal/40 backdrop-blur-md border border-gold/30 p-4 sm:p-6 rounded-2xl w-full max-w-lg mx-auto shadow-2xl reveal active mt-10">
+                <div class="grid grid-cols-4 gap-2 text-center">
+                    <div class="p-2">
+                        <span id="countdown-days" class="font-serif text-3xl sm:text-4xl text-gold-light block">00</span>
+                        <span class="text-[9px] sm:text-xs uppercase tracking-widest text-champagne/80 mt-1 block">Days</span>
+                    </div>
+                    <div class="p-2">
+                        <span id="countdown-hours" class="font-serif text-3xl sm:text-4xl text-gold-light block">00</span>
+                        <span class="text-[9px] sm:text-xs uppercase tracking-widest text-champagne/80 mt-1 block">Hours</span>
+                    </div>
+                    <div class="p-2">
+                        <span id="countdown-mins" class="font-serif text-3xl sm:text-4xl text-gold-light block">00</span>
+                        <span class="text-[9px] sm:text-xs uppercase tracking-widest text-champagne/80 mt-1 block">Mins</span>
+                    </div>
+                    <div class="p-2">
+                        <span id="countdown-secs" class="font-serif text-3xl sm:text-4xl text-gold-light block">00</span>
+                        <span class="text-[9px] sm:text-xs uppercase tracking-widest text-champagne/80 mt-1 block">Secs</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+	
+	<!-- Scroll Down Indicator -->
+<!-- Scroll Down Indicator -->
+<!-- Outer div handles the absolute positioning and perfect centering -->
+<div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 w-full flex justify-center">
+    <!-- Inner anchor handles the bounce animation -->
+    <a href="#souls" aria-label="Scroll down" class="animate-bounce text-white opacity-80 hover:opacity-100 transition-opacity flex flex-col items-center">
+        <span class="text-sm font-medium tracking-widest uppercase mb-2 drop-shadow-md">Scroll</span>
+        <svg class="w-6 h-6 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+        </svg>
+    </a>
+</div>
+	
+
+    <!-- -->
+    <!-- SECTION 1: Two Souls, One Journey -->
+    <section id="souls" class="py-20 sm:py-28 px-4 sm:px-8 bg-champagne relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="font-script text-4xl sm:text-5xl text-gold block mb-2">The Beginning</span>
+                <h2 class="font-serif text-4xl sm:text-5xl text-charcoal mb-4">Two Souls, One Journey</h2>
+                <div class="w-16 h-px bg-gold mx-auto"></div>
+                <p class="font-sans text-xs tracking-widest uppercase text-charcoal-light mt-4">The Bride &amp; Groom</p>
+            </div>
+
+            <!-- Mobile responsive stack, desktop side-by-side -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 sm:gap-16">
+                <!-- Bride -->
+                <div class="flex flex-col items-center text-center reveal delay-1">
+                    <div class="w-48 h-48 sm:w-64 sm:h-64 rounded-full overflow-hidden img-border mb-6">
+                        <img src="v1.jpg" alt="The Bride" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="font-serif text-3xl text-charcoal">Vidya Sahu</h3>
+                    <p class="text-gold font-script text-2xl mt-1 mb-4">The Bride</p>
+                    <p class="font-sans text-sm text-charcoal-light font-light leading-relaxed max-w-sm px-4">
+                        "Sachin is my calm and my greatest adventure. I cannot wait to dedicate the rest of my tomorrows to laughing, learning, and dreaming beside him."
+                    </p>
+                </div>
+
+                <!-- Groom -->
+                <div class="flex flex-col items-center text-center reveal delay-2">
+                    <div class="w-48 h-48 sm:w-64 sm:h-64 rounded-full overflow-hidden img-border mb-6">
+                        <img src="s1.jpg" alt="The Groom" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="font-serif text-3xl text-charcoal">Sachin Syam</h3>
+                    <p class="text-gold font-script text-2xl mt-1 mb-4">The Groom</p>
+                    <p class="font-sans text-sm text-charcoal-light font-light leading-relaxed max-w-sm px-4">
+                        "From the first conversation, Vidya captivated my heart. Choosing her as my lifelong partner is the most natural and joyful decision I will ever make."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- -->
+    <!-- SECTION 2: Program Itinerary -->
+    <section id="itinerary" class="py-20 sm:py-28 px-4 sm:px-8 bg-blush relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="font-script text-4xl sm:text-5xl text-gold block mb-2">Save the Date</span>
+                <h2 class="font-serif text-4xl sm:text-5xl text-charcoal mb-4">Program Itinerary</h2>
+                <div class="w-16 h-px bg-gold mx-auto"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Ceremony Card -->
+                <div class="bg-champagne rounded-2xl p-6 sm:p-10 shadow-lg border border-white reveal delay-1">
+                    <div class="text-center border-b border-blush-dark pb-6 mb-6">
+                        <h3 class="font-serif text-3xl text-charcoal">Wedding Ceremony</h3>
+                        <p class="font-sans text-sm text-charcoal-light mt-2">11:00 AM &ndash; 11:40 AM</p>
+                    </div>
+                    <div class="space-y-4 text-center font-sans text-sm text-charcoal-light font-light mb-8">
+                        <p><strong class="font-bold text-charcoal">Tuesday, October 20, 2026</strong></p>
+                        <p>C Kesavan Memorial Town Hall, Kollam</p>
+                       
+                    </div>
+                    <!-- Large touch-friendly buttons -->
+                    <div class="flex flex-col space-y-3">
+                        <button onclick="addToCalendar('ceremony')" class="w-full bg-gold text-white rounded-full py-4 text-xs font-bold uppercase tracking-widest shadow-md hover:bg-gold-dark transition touch-target">
+                            Add to Calendar
+                        </button>
+                        <a href="https://maps.app.goo.gl/QJerPLHY8aT1DbeV9" target="_blank" class="w-full flex justify-center items-center bg-transparent border border-gold text-gold rounded-full py-4 text-xs font-bold uppercase tracking-widest hover:bg-gold hover:text-white transition touch-target">
+                            View Location
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Reception Card -->
+                <div class="bg-champagne rounded-2xl p-6 sm:p-10 shadow-lg border border-white reveal delay-2">
+                    <div class="text-center border-b border-blush-dark pb-6 mb-6">
+                        <h3 class="font-serif text-3xl text-charcoal">Wedding Reception</h3>
+                        <p class="font-sans text-sm text-charcoal-light mt-2">4:00 PM &ndash; 8:00 PM</p>
+                    </div>
+                    <div class="space-y-4 text-center font-sans text-sm text-charcoal-light font-light mb-8">
+                        <p><strong class="font-bold text-charcoal">Wednesday, October 21, 2026</strong></p>
+                        <p>Izyan Convention Centre<br>Puthenkulam, Parippally, Kerala 691302</p>
+                    </div>
+                    <!-- Large touch-friendly buttons -->
+                    <div class="flex flex-col space-y-3">
+                        <button onclick="addToCalendar('reception')" class="w-full bg-gold text-white rounded-full py-4 text-xs font-bold uppercase tracking-widest shadow-md hover:bg-gold-dark transition touch-target">
+                            Add to Calendar
+                        </button>
+                        <a href="https://maps.app.goo.gl/3dLRvyG4dHL89uAh7" target="_blank" class="w-full flex justify-center items-center bg-transparent border border-gold text-gold rounded-full py-4 text-xs font-bold uppercase tracking-widest hover:bg-gold hover:text-white transition touch-target">
+                            View Location
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- -->
+    <!-- SECTION 3: Our Moments (Gallery) -->
+    <section id="moments" class="py-20 sm:py-28 px-4 sm:px-8 bg-champagne relative">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12 sm:mb-16 reveal">
+                <span class="font-script text-4xl sm:text-5xl text-gold block mb-2">Captured Memories</span>
+                <h2 class="font-serif text-4xl sm:text-5xl text-charcoal mb-4">Our Moments</h2>
+                <div class="w-16 h-px bg-gold mx-auto"></div>
+            </div>
+
+            <!-- Gallery Grid: 1 col mobile, 2 tablet, 3 desktop -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <!-- Gallery Items -->
+                <div class="relative h-72 rounded-xl overflow-hidden shadow-sm cursor-pointer reveal group">
+                    <img src="p1.jpeg" alt="p1" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-charcoal/20 opacity-0  transition-opacity flex items-center justify-center">
+                       
+                    </div>
+                </div>
+                <div class="relative h-72 rounded-xl overflow-hidden shadow-sm cursor-pointer reveal group">
+                    <img src="bng.jpeg" alt="p1" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-charcoal/20 opacity-0  transition-opacity flex items-center justify-center">
+                       
+                    </div>
+                </div>
+                <div class="relative h-72 rounded-xl overflow-hidden shadow-sm cursor-pointer reveal group">
+                    <img src="p3.jpeg" alt="p1" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-charcoal/20 opacity-0  transition-opacity flex items-center justify-center">
+                       
+                    </div>
+                </div>
+			
+				
+               
+     
+             
+            </div>
+        </div>
+    </section>
+
+    <!-- -->
+    <!-- SECTION 4: Warm Regards -->
+    <section id="warm-regards" class="py-20 sm:py-28 px-4 sm:px-8 bg-blush relative text-center">
+        <div class="max-w-3xl mx-auto">
+            <div class="reveal">
+                <span class="font-script text-5xl sm:text-6xl text-gold block mb-4">Warm Regards</span>
+                <p class="font-serif text-2xl sm:text-3xl text-charcoal italic leading-relaxed mb-8">
+                    "With blessings from parents, relatives & friends."
+                </p>
+                <p class="font-sans text-sm sm:text-base text-charcoal-light font-light leading-relaxed mb-10 px-4">
+                    As we embark on this sacred journey of marriage, having you stand with us and surround us with your warm wishes is the most precious gift we could ever receive.
+                </p>
+
+                <!-- Toast/Blessing button -->
+                <button onclick="sendWarmBlessing()" class="bg-charcoal text-champagne rounded-full py-4 px-8 text-xs font-bold uppercase tracking-widest shadow-xl hover:bg-gold transition touch-target w-full sm:w-auto">
+                    Send Warm Wishes
+                </button>
+                <p id="blessing-feedback" class="text-sm text-gold font-serif italic mt-4 opacity-0 transition-opacity duration-300 h-6">
+                    Thank you for your blessings!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-charcoal text-champagne py-12 px-4 text-center" style="padding-bottom: max(3rem, env(safe-area-inset-bottom));">
+        <div class="max-w-4xl mx-auto">
+            <span class="font-script text-4xl text-gold-light block mb-2">Vidya &amp; Sachin</span>
+            <p class="font-sans text-xs tracking-widest uppercase text-champagne/60 mb-6">October 20, 2026</p>
+            <p class="text-[10px] text-champagne/40 font-light">
+                Designed by Sachin
+            </p>
+        </div>
+    </footer>
+
+    <!-- -->
+    <!-- Mobile-Friendly Lightbox Modal -->
+    <div id="lightbox" class="fixed inset-0 z-[60] bg-charcoal/95 hidden flex-col items-center justify-center transition-opacity" onclick="closeLightboxOnBackdrop(event)">
+        <!-- Close Button (Large touch target) -->
+        <button onclick="closeLightbox()" class="absolute right-4 p-4 text-champagne/70 hover:text-white touch-target z-[70]" style="top: max(1rem, env(safe-area-inset-top));">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+
+        <div class="relative w-full h-full flex items-center justify-center px-2" id="lightbox-touch-area">
+            <!-- Image Container -->
+            <img id="lightbox-img" src="" alt="Gallery" class="max-h-[70vh] md:max-h-[85vh] max-w-full object-contain rounded-md shadow-2xl transition-transform duration-300">
+            
+            <!-- Mobile Optimized Navigation (Bottom on mobile, sides on desktop) -->
+            <div class="absolute inset-x-0 bottom-10 md:bottom-1/2 md:translate-y-1/2 flex justify-between px-4 md:px-8 pointer-events-none" style="padding-bottom: env(safe-area-inset-bottom);">
+                <button onclick="prevPhoto(event)" class="pointer-events-auto bg-charcoal/50 backdrop-blur text-white p-4 rounded-full touch-target shadow-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                </button>
+                <button onclick="nextPhoto(event)" class="pointer-events-auto bg-charcoal/50 backdrop-blur text-white p-4 rounded-full touch-target shadow-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calendar Chooser Modal -->
+    <div id="calendar-modal" class="fixed inset-0 z-[60] bg-charcoal/80 backdrop-blur-sm hidden items-end sm:items-center justify-center p-0 sm:p-4 transition-opacity">
+        <div class="bg-champagne w-full sm:max-w-sm rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl transform transition-transform translate-y-full sm:translate-y-0" id="calendar-dialog" style="padding-bottom: max(2rem, env(safe-area-inset-bottom));">
+            <div class="flex justify-between items-center mb-6">
+                <h4 class="font-serif text-2xl text-charcoal">Add to Calendar</h4>
+                <button onclick="closeCalendarModal()" class="p-2 -mr-2 text-charcoal-light touch-target">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <a id="cal-link-google" href="#" target="_blank" class="flex items-center justify-between w-full p-4 rounded-xl border border-gold/30 hover:bg-gold/10 text-sm font-bold text-charcoal uppercase tracking-wider touch-target">
+                    <span>Android/Google Calendar</span>
+                    <span class="text-gold">&rarr;</span>
+                </a>
+                <button onclick="downloadICSFile()" class="flex items-center justify-between w-full p-4 rounded-xl border border-gold/30 hover:bg-gold/10 text-sm font-bold text-charcoal uppercase tracking-wider text-left touch-target">
+                    <span>Apple / Outlook</span>
+                    <span class="text-gold">&rarr;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-[70]"></canvas>
+
+    <!-- -->
+    <script>
+        /* Mobile Menu Toggle */
+        const toggleBtn = document.getElementById('mobile-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.querySelectorAll('.mobile-nav-link');
+
+        toggleBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        /* Countdown Timer */
+        const weddingDate = new Date("October 20, 2026 11:00:00").getTime();
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const diff = weddingDate - now;
+
+            if (diff > 0) {
+                document.getElementById('countdown-days').innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
+                document.getElementById('countdown-hours').innerText = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+                document.getElementById('countdown-mins').innerText = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                document.getElementById('countdown-secs').innerText = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+            }
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        /* Scroll Reveal Observer */
+        const observerOptions = { root: null, threshold: 0.1, rootMargin: '0px 0px -20px 0px' };
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+
+
+        /* Calendar Logic */
+			  const eventsData = {
+			ceremony: {
+				title: "Vidya Weds Sachin",
+				details: "The Muhurtham is between 11:00 AM & 11:40 AM at C Kesavan Memorial Town Hall, Kollam.",
+				start: "20261020T053000Z",
+				end: "20261020T061000Z",
+				icsStart: "20261020T110000",
+				icsEnd: "20261020T114000"
+			},
+			reception: {
+				title: "Vidya & Sachin's Wedding Reception",
+				details: "At Izyan Convention Centre, Puthenkulam.",
+				start: "20261021T103000Z",
+				end: "20261021T143000Z",
+				icsStart: "20261021T160000",
+				icsEnd: "20261021T200000"
+			}
+		
+        };
+        let currentEvent = null;
+
+        function addToCalendar(key) {
+            currentEvent = eventsData[key];
+            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(currentEvent.title)}&dates=${currentEvent.start}/${currentEvent.end}&location=${encodeURIComponent(currentEvent.details)}`;
+            document.getElementById('cal-link-google').href = url;
+            
+            const modal = document.getElementById('calendar-modal');
+            const dialog = document.getElementById('calendar-dialog');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // Small delay for slide-up animation on mobile
+            setTimeout(() => {
+                dialog.classList.remove('translate-y-full');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCalendarModal() {
+            const modal = document.getElementById('calendar-modal');
+            const dialog = document.getElementById('calendar-dialog');
+            dialog.classList.add('translate-y-full');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+
+        function downloadICSFile() {
+            if (!currentEvent) return;
+            const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nSUMMARY:${currentEvent.title}\r\nLOCATION:${currentEvent.details}\r\nDTSTART:${currentEvent.icsStart}\r\nDTEND:${currentEvent.icsEnd}\r\nEND:VEVENT\r\nEND:VCALENDAR`;
+            const blob = new Blob([ics], { type: "text/calendar" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "wedding_event.ics";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            closeCalendarModal();
+        }
+
+        /* Confetti Effect */
+        function sendWarmBlessing() {
+            const fb = document.getElementById('blessing-feedback');
+            fb.style.opacity = '1';
+            
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const pieces = [];
+            for (let i = 0; i < 60; i++) {
+                pieces.push({
+                    x: canvas.width / 2, y: canvas.height - 50,
+                    vx: (Math.random() - 0.5) * 15, vy: -(Math.random() * 15 + 10),
+                    size: Math.random() * 6 + 4,
+                    color: ['#C5A059', '#E3C892', '#ffffff', '#F2E8E4'][Math.floor(Math.random() * 4)],
+                    rot: Math.random() * 360, rotSpeed: (Math.random() - 0.5) * 10,
+                    opacity: 1
+                });
+            }
+            
+            function render() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let active = false;
+                pieces.forEach(p => {
+                    p.x += p.vx; p.y += p.vy; p.vy += 0.3; p.rot += p.rotSpeed; p.opacity -= 0.01;
+                    if (p.opacity > 0) {
+                        active = true;
+                        ctx.save();
+                        ctx.globalAlpha = p.opacity;
+                        ctx.translate(p.x, p.y);
+                        ctx.rotate(p.rot * Math.PI / 180);
+                        ctx.fillStyle = p.color;
+                        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                        ctx.restore();
+                    }
+                });
+                if (active) requestAnimationFrame(render);
+                else ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            render();
+            
+            setTimeout(() => fb.style.opacity = '0', 3000);
+        }
+
+        /* Lightbox Swipe Support for iPhone Touch Screens */
+        let touchstartX = 0;
+        let touchendX = 0;
+        const lightboxArea = document.getElementById('lightbox-touch-area');
+
+        function checkSwipeDirection() {
+            const threshold = 40; // minimum distance in pixels to trigger swipe
+            if (touchendX < touchstartX - threshold) nextPhoto(); // Swiped left
+            if (touchendX > touchstartX + threshold) prevPhoto(); // Swiped right
+        }
+
+        lightboxArea.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        lightboxArea.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            checkSwipeDirection();
+        }, { passive: true });
+
+    </script>
+	
+	<script>
+    const bgm = document.getElementById('weddingBgm');
+    const musicToggle = document.getElementById('musicToggle');
+    const iconMuted = document.getElementById('icon-muted');
+    const iconPlaying = document.getElementById('icon-playing');
+
+    musicToggle.addEventListener('click', () => {
+        if (bgm.paused) {
+            bgm.play();
+            // Hide muted icon, show playing icon
+            iconMuted.classList.add('hidden');
+            iconPlaying.classList.remove('hidden');
+        } else {
+            bgm.pause();
+            // Hide playing icon, show muted icon
+            iconMuted.classList.remove('hidden');
+            iconPlaying.classList.add('hidden');
+        }
+    });
+</script>
+</body>
+</html>
