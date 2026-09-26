@@ -85,33 +85,61 @@
 
         /* Graceful Custom Animations */
         @keyframes gracefulSlideIn {
-            0% { opacity: 0; transform: translateY(50px); }
-            100% { opacity: 1; transform: translateY(0); }
+            0% {
+                opacity: 0;
+                transform: translate3d(0, 52px, 0) scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                transform: translate3d(0, 0, 0) scale(1);
+            }
         }
         .animate-graceful-slide-in {
-            animation: gracefulSlideIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: gracefulSlideIn 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
         }
 
         @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .animate-fade-in {
-            animation: fadeIn 1.5s ease-out forwards;
+            animation: fadeIn 1.2s ease-out forwards;
             opacity: 0;
         }
 
-        /* Scroll Reveal (Intersection Observer) - Upgraded to 1.2s for graceful flow */
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        .animate-soft-float {
+            animation: gentleFloat 7s ease-in-out infinite;
+            will-change: transform;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 0 rgba(197, 160, 89, 0.12); }
+            50% { box-shadow: 0 0 25px rgba(197, 160, 89, 0.22); }
+        }
+
+        /* Scroll Reveal (Intersection Observer) - smooth, elegant uplift */
         .reveal {
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform;
+            transform: translate3d(0, 36px, 0) scale(0.985);
+            filter: blur(6px);
+            transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1), transform 1.1s cubic-bezier(0.16, 1, 0.3, 1), filter 1.1s ease;
+            will-change: opacity, transform, filter;
         }
         .reveal.active {
             opacity: 1;
-            transform: translateY(0);
+            transform: translate3d(0, 0, 0) scale(1);
+            filter: blur(0);
         }
         .delay-1 { transition-delay: 150ms; }
         .delay-2 { transition-delay: 300ms; }
@@ -120,14 +148,48 @@
         /* Elegant Image Borders */
         .img-border {
             position: relative;
+            transform: translateZ(0);
+            transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.7s ease;
         }
-        .img-border::after {
+        .img-border::before {
             content: '';
             position: absolute;
-            inset: -8px;
-            border: 1px solid #C5A059; /* Gold */
+            inset: -10px;
+            border: 1px solid rgba(197, 160, 89, 0.45);
+            border-radius: 9999px;
             pointer-events: none;
-            opacity: 0.5;
+            transform: scale(0.96);
+            transition: transform 0.7s ease, opacity 0.7s ease;
+            opacity: 0.7;
+        }
+        .img-border:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 35px rgba(45, 44, 42, 0.08);
+        }
+        .img-border:hover::before {
+            transform: scale(1.02);
+            opacity: 1;
+        }
+
+        /* Soft button motion */
+        .soft-button,
+        .soft-link {
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+        }
+        .soft-button:hover,
+        .soft-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 18px rgba(45, 44, 42, 0.08);
+        }
+
+        /* Header subtle motion */
+        #main-nav {
+            transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, backdrop-filter 0.35s ease, transform 0.35s ease;
+        }
+        #main-nav.scrolled {
+            background: rgba(251, 249, 246, 0.88);
+            box-shadow: 0 10px 30px rgba(45, 44, 42, 0.04);
+            border-bottom-color: rgba(197, 160, 89, 0.3);
         }
 
         /* Custom Scrollbar for mobile/desktop harmony */
@@ -141,6 +203,15 @@
             min-width: 44px;
             touch-action: manipulation;
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
     </style>
 </head>
 <body class="font-sans antialiased">
@@ -150,23 +221,22 @@
     <source src="music.mp3" type="audio/mpeg">
   </audio>
 <!-- Music Toggle Button -->
-<button id="musicToggle" class="fixed bottom-6 left-6 z-50 bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg border border-gray-200 text-gray-800 hover:bg-white transition-all transform hover:scale-105 touch-manipulation" aria-label="Toggle Music">
+<button id="musicToggle" class="fixed bottom-6 left-6 z-50 bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg border border-gray-200 text-gray-800 hover:bg-white transition-all transform hover:scale-105 active:scale-95" aria-label="Toggle background music">
     
     <!-- Muted Icon (Default) -->
     <svg id="icon-muted" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd"></path>
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zm8.914 0l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
     </svg>
 
     <!-- Playing Icon (Hidden by default) -->
     <svg id="icon-playing" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15"></path>
     </svg>
     
 </button>
 	
     <!-- Sticky Navbar -->
-    <header id="main-nav" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-champagne/90 backdrop-blur-md border-b border-gold/20 animate-fade-in" style="padding-top: max(0.75rem, env(safe-area-inset-top)); padding-bottom: 0.75rem;">
+    <header id="main-nav" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-champagne/90 backdrop-blur-md border-b border-gold/20 animate-fade-in" style="padding-top: max(0.75rem, env(safe-area-inset-top)); padding-bottom: max(0.75rem, env(safe-area-inset-bottom));">
         <div class="max-w-7xl mx-auto px-4 sm:px-8 flex justify-between items-center">
             <a href="#home" class="flex items-center space-x-2 touch-target">
                 <span class="font-script text-3xl sm:text-4xl text-gold">Vidya Weds Sachin</span>
@@ -216,7 +286,7 @@
             </div>
 
             <!-- Mobile-Optimized Countdown -->
-            <div class="bg-charcoal/40 backdrop-blur-md border border-gold/30 p-4 sm:p-6 rounded-2xl w-full max-w-lg mx-auto shadow-2xl mt-10">
+            <div class="bg-charcoal/40 backdrop-blur-md border border-gold/30 p-4 sm:p-6 rounded-2xl w-full max-w-lg mx-auto shadow-2xl mt-10" style="animation: glowPulse 4.5s ease-in-out infinite;">
                 <div class="grid grid-cols-4 gap-2 text-center">
                     <div class="p-2">
                         <span id="countdown-days" class="font-serif text-3xl sm:text-4xl text-gold-light block">00</span>
@@ -267,8 +337,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 sm:gap-16">
                 <!-- Bride -->
                 <div class="flex flex-col items-center text-center reveal delay-1">
-                    <div class="w-48 h-48 sm:w-64 sm:h-64 rounded-full overflow-hidden img-border mb-6 transform transition hover:scale-105 duration-700">
-                        <img src="v1.jpg" alt="The Bride" class="w-full h-full object-cover">
+                    <div class="w-48 h-48 sm:w-64 sm:h-64 rounded-full overflow-hidden img-border mb-6">
+                        <img src="v1.jpg" alt="The Bride" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                     </div>
                     <h3 class="font-serif text-3xl text-charcoal">Vidya Sahu</h3>
                     <p class="text-gold font-script text-2xl mt-1 mb-4">The Bride</p>
@@ -279,8 +349,8 @@
 
                 <!-- Groom -->
                 <div class="flex flex-col items-center text-center reveal delay-2">
-                    <div class="w-48 h-48 sm:w-64 sm:h-64 rounded-full overflow-hidden img-border mb-6 transform transition hover:scale-105 duration-700">
-                        <img src="s1.jpg" alt="The Groom" class="w-full h-full object-cover">
+                    <div class="w-48 h-48 sm:w-64 sm:h-64 rounded-full overflow-hidden img-border mb-6">
+                        <img src="s1.jpg" alt="The Groom" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                     </div>
                     <h3 class="font-serif text-3xl text-charcoal">Sachin Syam</h3>
                     <p class="text-gold font-script text-2xl mt-1 mb-4">The Groom</p>
@@ -304,7 +374,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Ceremony Card -->
-                <div class="bg-champagne rounded-2xl p-6 sm:p-10 shadow-lg border border-white reveal delay-1">
+                <div class="bg-champagne rounded-2xl p-6 sm:p-10 shadow-lg border border-white reveal delay-1 soft-button">
                     <div class="text-center border-b border-blush-dark pb-6 mb-6">
                         <h3 class="font-serif text-3xl text-charcoal">Wedding Ceremony</h3>
                         <p class="font-sans text-sm text-charcoal-light mt-2">Muhurtham between 11:00 AM &amp; 11:40 AM</p>
@@ -316,10 +386,10 @@
                     </div>
                     <!-- Large touch-friendly buttons -->
                     <div class="flex flex-col space-y-3">
-                        <button onclick="addToCalendar('ceremony')" class="w-full bg-gold text-white rounded-full py-4 text-xs font-bold uppercase tracking-widest shadow-md hover:bg-gold-dark transition touch-target">
+                        <button onclick="addToCalendar('ceremony')" class="w-full bg-gold text-white rounded-full py-4 text-xs font-bold uppercase tracking-widest shadow-md hover:bg-gold-dark transition soft-button">
                             Add to Calendar
                         </button>
-                        <a href="https://maps.app.goo.gl/QJerPLHY8aT1DbeV9" target="_blank" class="w-full flex justify-center items-center bg-transparent border border-gold text-gold rounded-full py-4 text-xs font-bold uppercase tracking-widest hover:bg-gold hover:text-white transition touch-target">
+                        <a href="https://maps.app.goo.gl/QJerPLHY8aT1DbeV9" target="_blank" class="w-full flex justify-center items-center bg-transparent border border-gold text-gold rounded-full py-4 text-xs font-bold uppercase tracking-widest soft-link">
                             View Location
                         </a>
                     </div>
@@ -377,7 +447,7 @@
                 </p>
 
                 <!-- Toast/Blessing button -->
-                <button onclick="sendWarmBlessing()" class="bg-charcoal text-champagne rounded-full py-4 px-8 text-xs font-bold uppercase tracking-widest shadow-xl hover:bg-gold transition touch-target w-full sm:w-auto">
+                <button onclick="sendWarmBlessing()" class="bg-charcoal text-champagne rounded-full py-4 px-8 text-xs font-bold uppercase tracking-widest shadow-xl hover:bg-gold transition soft-button">
                     Send Warm Wishes
                 </button>
                 <p id="blessing-feedback" class="text-sm text-gold font-serif italic mt-4 opacity-0 transition-opacity duration-300 h-6">
@@ -412,10 +482,10 @@
             
             <!-- Mobile Optimized Navigation (Bottom on mobile, sides on desktop) -->
             <div class="absolute inset-x-0 bottom-10 md:bottom-1/2 md:translate-y-1/2 flex justify-between px-4 md:px-8 pointer-events-none" style="padding-bottom: env(safe-area-inset-bottom);">
-                <button onclick="prevPhoto(event)" class="pointer-events-auto bg-charcoal/50 backdrop-blur text-white p-4 rounded-full touch-target shadow-lg hover:bg-gold transition-colors duration-300">
+                <button onclick="prevPhoto(event)" class="pointer-events-auto bg-charcoal/50 backdrop-blur text-white p-4 rounded-full touch-target shadow-lg hover:bg-gold transition-colors duration-300 soft-button">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
-                <button onclick="nextPhoto(event)" class="pointer-events-auto bg-charcoal/50 backdrop-blur text-white p-4 rounded-full touch-target shadow-lg hover:bg-gold transition-colors duration-300">
+                <button onclick="nextPhoto(event)" class="pointer-events-auto bg-charcoal/50 backdrop-blur text-white p-4 rounded-full touch-target shadow-lg hover:bg-gold transition-colors duration-300 soft-button">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </button>
             </div>
@@ -424,7 +494,7 @@
 
     <!-- Calendar Chooser Modal -->
     <div id="calendar-modal" class="fixed inset-0 z-[60] bg-charcoal/80 backdrop-blur-sm hidden items-end sm:items-center justify-center p-0 sm:p-4 transition-opacity">
-        <div class="bg-champagne w-full sm:max-w-sm rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl transform transition-transform translate-y-full sm:translate-y-0" id="calendar-dialog" style="padding-bottom: max(2rem, env(safe-area-inset-bottom));">
+        <div class="bg-champagne w-full sm:max-w-sm rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl transform transition-transform translate-y-full sm:translate-y-0" id="calendar-dialog" style="padding-bottom: max(1.5rem, env(safe-area-inset-bottom));">
             <div class="flex justify-between items-center mb-6">
                 <h4 class="font-serif text-2xl text-charcoal">Add to Calendar</h4>
                 <button onclick="closeCalendarModal()" class="p-2 -mr-2 text-charcoal-light touch-target hover:text-charcoal transition-colors">
@@ -433,11 +503,11 @@
             </div>
             
             <div class="space-y-4">
-                <a id="cal-link-google" href="#" target="_blank" class="flex items-center justify-between w-full p-4 rounded-xl border border-gold/30 hover:bg-gold/10 text-sm font-bold text-charcoal uppercase tracking-wider touch-target transition-colors">
+                <a id="cal-link-google" href="#" target="_blank" class="flex items-center justify-between w-full p-4 rounded-xl border border-gold/30 hover:bg-gold/10 text-sm font-bold text-charcoal uppercase tracking-widest soft-link">
                     <span>Android/Google Calendar</span>
                     <span class="text-gold">&rarr;</span>
                 </a>
-                <button onclick="downloadICSFile()" class="flex items-center justify-between w-full p-4 rounded-xl border border-gold/30 hover:bg-gold/10 text-sm font-bold text-charcoal uppercase tracking-wider text-left touch-target transition-colors">
+                <button onclick="downloadICSFile()" class="flex items-center justify-between w-full p-4 rounded-xl border border-gold/30 hover:bg-gold/10 text-sm font-bold text-charcoal uppercase tracking-widest soft-button">
                     <span>Apple / Outlook</span>
                     <span class="text-gold">&rarr;</span>
                 </button>
@@ -461,6 +531,18 @@
         navLinks.forEach(link => {
             link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
         });
+
+        /* Header scroll refinement */
+        const mainNav = document.getElementById('main-nav');
+        const handleNavState = () => {
+            if (window.scrollY > 24) {
+                mainNav.classList.add('scrolled');
+            } else {
+                mainNav.classList.remove('scrolled');
+            }
+        };
+        window.addEventListener('scroll', handleNavState, { passive: true });
+        handleNavState();
 
         /* Countdown Timer */
         const weddingDate = new Date("October 20, 2026 11:00:00").getTime();
@@ -565,13 +647,16 @@
             canvas.height = window.innerHeight;
             
             const pieces = [];
-            for (let i = 0; i < 60; i++) {
+            for (let i = 0; i < 80; i++) {
                 pieces.push({
-                    x: canvas.width / 2, y: canvas.height - 50,
-                    vx: (Math.random() - 0.5) * 15, vy: -(Math.random() * 15 + 10),
+                    x: canvas.width / 2,
+                    y: canvas.height - 40,
+                    vx: (Math.random() - 0.5) * 18,
+                    vy: -(Math.random() * 15 + 10),
                     size: Math.random() * 6 + 4,
                     color: ['#C5A059', '#E3C892', '#ffffff', '#F2E8E4'][Math.floor(Math.random() * 4)],
-                    rot: Math.random() * 360, rotSpeed: (Math.random() - 0.5) * 10,
+                    rot: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 12,
                     opacity: 1
                 });
             }
@@ -580,7 +665,11 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 let active = false;
                 pieces.forEach(p => {
-                    p.x += p.vx; p.y += p.vy; p.vy += 0.3; p.rot += p.rotSpeed; p.opacity -= 0.01;
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.28;
+                    p.rot += p.rotSpeed;
+                    p.opacity -= 0.008;
                     if (p.opacity > 0) {
                         active = true;
                         ctx.save();
@@ -588,7 +677,7 @@
                         ctx.translate(p.x, p.y);
                         ctx.rotate(p.rot * Math.PI / 180);
                         ctx.fillStyle = p.color;
-                        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
                         ctx.restore();
                     }
                 });
