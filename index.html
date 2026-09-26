@@ -83,11 +83,30 @@
             );
         }
 
-        /* Scroll Reveal (Intersection Observer) */
+        /* Graceful Custom Animations */
+        @keyframes gracefulSlideIn {
+            0% { opacity: 0; transform: translateY(50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-graceful-slide-in {
+            animation: gracefulSlideIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .animate-fade-in {
+            animation: fadeIn 1.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Scroll Reveal (Intersection Observer) - Upgraded to 1.2s for graceful flow */
         .reveal {
             opacity: 0;
             transform: translateY(40px);
-            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: opacity, transform;
         }
         .reveal.active {
@@ -147,7 +166,7 @@
 </button>
 	
     <!-- Sticky Navbar -->
-    <header id="main-nav" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-champagne/90 backdrop-blur-md border-b border-gold/20" style="padding-top: max(0.75rem, env(safe-area-inset-top)); padding-bottom: 0.75rem;">
+    <header id="main-nav" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-champagne/90 backdrop-blur-md border-b border-gold/20 animate-fade-in" style="padding-top: max(0.75rem, env(safe-area-inset-top)); padding-bottom: 0.75rem;">
         <div class="max-w-7xl mx-auto px-4 sm:px-8 flex justify-between items-center">
             <a href="#home" class="flex items-center space-x-2 touch-target">
                 <span class="font-script text-3xl sm:text-4xl text-gold">Vidya Weds Sachin</span>
@@ -187,7 +206,7 @@
         <div class="absolute inset-0 bg-cover bg-center md:bg-[center_30%]" style="background-image: url('bg.jpeg');"></div>
         <div class="absolute inset-0 hero-overlay"></div>
 
-        <div class="relative z-20 max-w-3xl mx-auto text-champagne mt-10 w-full">
+        <div class="relative z-20 max-w-3xl mx-auto text-champagne mt-10 w-full animate-graceful-slide-in">
             <div class="animate-soft-float mb-6">
                 <p class="font-sans text-xs sm:text-sm tracking-[0.3em] uppercase text-gold-light mb-4">We are getting married</p>
                 <h1 class="font-serif text-5xl sm:text-6xl md:text-8xl text-champagne drop-shadow-lg leading-tight mb-2 whitespace-nowrap">
@@ -197,7 +216,7 @@
             </div>
 
             <!-- Mobile-Optimized Countdown -->
-            <div class="bg-charcoal/40 backdrop-blur-md border border-gold/30 p-4 sm:p-6 rounded-2xl w-full max-w-lg mx-auto shadow-2xl reveal active mt-10">
+            <div class="bg-charcoal/40 backdrop-blur-md border border-gold/30 p-4 sm:p-6 rounded-2xl w-full max-w-lg mx-auto shadow-2xl mt-10">
                 <div class="grid grid-cols-4 gap-2 text-center">
                     <div class="p-2">
                         <span id="countdown-days" class="font-serif text-3xl sm:text-4xl text-gold-light block">00</span>
@@ -221,9 +240,8 @@
     </section>
 	
 	<!-- Scroll Down Indicator -->
-<!-- Scroll Down Indicator -->
 <!-- Outer div handles the absolute positioning and perfect centering -->
-<div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 w-full flex justify-center">
+<div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 w-full flex justify-center animate-fade-in" style="animation-delay: 1s;">
     <!-- Inner anchor handles the bounce animation -->
     <a href="#souls" aria-label="Scroll down" class="animate-bounce text-white opacity-80 hover:opacity-100 transition-opacity flex flex-col items-center">
         <span class="text-sm font-medium tracking-widest uppercase mb-2 drop-shadow-md">Scroll</span>
@@ -249,7 +267,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 sm:gap-16">
                 <!-- Bride -->
                 <div class="flex flex-col items-center text-center reveal delay-1">
-                    <div class="w-48 h-48 sm:w-64 sm:h-64 rounded-full overflow-hidden img-border mb-6">
+                    <div class="w-48 h-48 sm:w-64 sm:h-64 rounded-full overflow-hidden img-border mb-6 transform transition hover:scale-105 duration-700">
                         <img src="v1.jpg" alt="The Bride" class="w-full h-full object-cover">
                     </div>
                     <h3 class="font-serif text-3xl text-charcoal">Vidya Sahu</h3>
@@ -261,7 +279,7 @@
 
                 <!-- Groom -->
                 <div class="flex flex-col items-center text-center reveal delay-2">
-                    <div class="w-48 h-48 sm:w-64 sm:h-64 rounded-full overflow-hidden img-border mb-6">
+                    <div class="w-48 h-48 sm:w-64 sm:h-64 rounded-full overflow-hidden img-border mb-6 transform transition hover:scale-105 duration-700">
                         <img src="s1.jpg" alt="The Groom" class="w-full h-full object-cover">
                     </div>
                     <h3 class="font-serif text-3xl text-charcoal">Sachin Syam</h3>
@@ -307,7 +325,7 @@
                     </div>
                 </div>
 
-                <!-- Reception Card -->
+                <!-- Reception Card (Empty structurally preserved) -->
               
             </div>
         </div>
@@ -326,35 +344,27 @@
             <!-- Gallery Grid: 1 col mobile, 2 tablet, 3 desktop -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <!-- Gallery Items -->
-                <div class="relative h-72 rounded-xl overflow-hidden shadow-sm cursor-pointer reveal group">
+                <div class="relative h-72 rounded-xl overflow-hidden shadow-sm cursor-pointer reveal group delay-1">
                     <img src="p1.jpeg" alt="p1" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                    <div class="absolute inset-0 bg-charcoal/20 opacity-0  transition-opacity flex items-center justify-center">
-                       
+                    <div class="absolute inset-0 bg-charcoal/20 opacity-0 transition-opacity flex items-center justify-center">
                     </div>
                 </div>
-                <div class="relative h-72 rounded-xl overflow-hidden shadow-sm cursor-pointer reveal group">
+                <div class="relative h-72 rounded-xl overflow-hidden shadow-sm cursor-pointer reveal group delay-2">
                     <img src="bng.jpeg" alt="p1" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                    <div class="absolute inset-0 bg-charcoal/20 opacity-0  transition-opacity flex items-center justify-center">
-                       
+                    <div class="absolute inset-0 bg-charcoal/20 opacity-0 transition-opacity flex items-center justify-center">
                     </div>
                 </div>
-                <div class="relative h-72 rounded-xl overflow-hidden shadow-sm cursor-pointer reveal group">
+                <div class="relative h-72 rounded-xl overflow-hidden shadow-sm cursor-pointer reveal group delay-3">
                     <img src="p3.jpeg" alt="p1" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                    <div class="absolute inset-0 bg-charcoal/20 opacity-0  transition-opacity flex items-center justify-center">
-                       
+                    <div class="absolute inset-0 bg-charcoal/20 opacity-0 transition-opacity flex items-center justify-center">
                     </div>
                 </div>
-			
-				
-               
-     
-             
             </div>
         </div>
     </section>
 
     <!-- -->
-    <!-- SECTION 4: Warm Regards -->
+     <!-- SECTION 4: Warm Regards -->
     <section id="warm-regards" class="py-20 sm:py-28 px-4 sm:px-8 bg-blush relative text-center">
         <div class="max-w-3xl mx-auto">
             <div class="reveal">
@@ -378,7 +388,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-charcoal text-champagne py-12 px-4 text-center" style="padding-bottom: max(3rem, env(safe-area-inset-bottom));">
+    <footer class="bg-charcoal text-champagne py-12 px-4 text-center reveal" style="padding-bottom: max(3rem, env(safe-area-inset-bottom));">
         <div class="max-w-4xl mx-auto">
             <span class="font-script text-4xl text-gold-light block mb-2">Vidya &amp; Sachin</span>
             <p class="font-sans text-xs tracking-widest uppercase text-champagne/60 mb-6">October 20, 2026</p>
@@ -402,10 +412,10 @@
             
             <!-- Mobile Optimized Navigation (Bottom on mobile, sides on desktop) -->
             <div class="absolute inset-x-0 bottom-10 md:bottom-1/2 md:translate-y-1/2 flex justify-between px-4 md:px-8 pointer-events-none" style="padding-bottom: env(safe-area-inset-bottom);">
-                <button onclick="prevPhoto(event)" class="pointer-events-auto bg-charcoal/50 backdrop-blur text-white p-4 rounded-full touch-target shadow-lg">
+                <button onclick="prevPhoto(event)" class="pointer-events-auto bg-charcoal/50 backdrop-blur text-white p-4 rounded-full touch-target shadow-lg hover:bg-gold transition-colors duration-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
-                <button onclick="nextPhoto(event)" class="pointer-events-auto bg-charcoal/50 backdrop-blur text-white p-4 rounded-full touch-target shadow-lg">
+                <button onclick="nextPhoto(event)" class="pointer-events-auto bg-charcoal/50 backdrop-blur text-white p-4 rounded-full touch-target shadow-lg hover:bg-gold transition-colors duration-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </button>
             </div>
@@ -417,17 +427,17 @@
         <div class="bg-champagne w-full sm:max-w-sm rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl transform transition-transform translate-y-full sm:translate-y-0" id="calendar-dialog" style="padding-bottom: max(2rem, env(safe-area-inset-bottom));">
             <div class="flex justify-between items-center mb-6">
                 <h4 class="font-serif text-2xl text-charcoal">Add to Calendar</h4>
-                <button onclick="closeCalendarModal()" class="p-2 -mr-2 text-charcoal-light touch-target">
+                <button onclick="closeCalendarModal()" class="p-2 -mr-2 text-charcoal-light touch-target hover:text-charcoal transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
             
             <div class="space-y-4">
-                <a id="cal-link-google" href="#" target="_blank" class="flex items-center justify-between w-full p-4 rounded-xl border border-gold/30 hover:bg-gold/10 text-sm font-bold text-charcoal uppercase tracking-wider touch-target">
+                <a id="cal-link-google" href="#" target="_blank" class="flex items-center justify-between w-full p-4 rounded-xl border border-gold/30 hover:bg-gold/10 text-sm font-bold text-charcoal uppercase tracking-wider touch-target transition-colors">
                     <span>Android/Google Calendar</span>
                     <span class="text-gold">&rarr;</span>
                 </a>
-                <button onclick="downloadICSFile()" class="flex items-center justify-between w-full p-4 rounded-xl border border-gold/30 hover:bg-gold/10 text-sm font-bold text-charcoal uppercase tracking-wider text-left touch-target">
+                <button onclick="downloadICSFile()" class="flex items-center justify-between w-full p-4 rounded-xl border border-gold/30 hover:bg-gold/10 text-sm font-bold text-charcoal uppercase tracking-wider text-left touch-target transition-colors">
                     <span>Apple / Outlook</span>
                     <span class="text-gold">&rarr;</span>
                 </button>
